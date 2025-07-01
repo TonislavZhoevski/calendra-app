@@ -1,8 +1,15 @@
+'use client'
+
 import { PrivateNavLinks } from "@/constants";
+import { cn } from "@/lib/utils";
+import { SignedIn, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function PrivateNavBar() {
+  const pathname = usePathname();
+  
   return(
     <nav className="flex justify-between items-center fixed z-50 w-full h-28 bg-gray-200 px-10 gap-4 shadow-2xl mb-28">
       {/* Logo */}
@@ -50,6 +57,16 @@ export default function PrivateNavBar() {
           })}
         </div>
       </section>
+
+      {/* User button */}
+      <div className='hover:scale-150 duration-500'>
+        <SignedIn>
+          {/* Mount the UserButton component */}
+          <UserButton/>
+        </SignedIn>
+
+      </div>
+
     </nav>
   )
 }
