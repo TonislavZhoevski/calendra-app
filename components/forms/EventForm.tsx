@@ -12,6 +12,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Button } from '../ui/button';
 import { useTransition } from 'react';
 import Link from 'next/link';
+import { createEvent } from '@/server/actions/events';
 
 // Component to handle creating/editing/deleting an event
 export default function EventForm({
@@ -50,6 +51,20 @@ export default function EventForm({
           name: '', // Ensure controlled input: default to empty string
         },
   });
+
+
+  async function onSubmit(values: z.infer<typeof eventFormSchema>) {
+    const action = event == null ? createEvent : updateEvent.bind(null, event.id)
+    try {
+        await action(values)
+    } catch (error: any) {
+        // Handle any error that occurs during the action (e.g., network error)
+        form.setError("root", {
+            message: `There was an error saving your event ${error.message}`,
+        })
+    }
+  }
+
 
   return (
     <Form {...form}>
