@@ -4,15 +4,34 @@ import { eventFormSchema } from '@/schema/events';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Switch } from '../ui/switch';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../ui/alert-dialog';
 import { Button } from '../ui/button';
 import { useTransition } from 'react';
 import Link from 'next/link';
 import { createEvent, deleteEvent, updateEvent } from '@/server/actions/events';
+import { useRouter } from 'next/navigation';
 
 // Component to handle creating/editing/deleting an event
 export default function EventForm({
@@ -28,15 +47,14 @@ export default function EventForm({
     isActive: boolean; // Indicates whether the event is currently active
   };
 }) {
+  // useTransition is a React hook that helps manage the state of transitions in async operations
+  // It returns two values:
+  // 1. `isDeletePending` - This is a boolean that tells us if the deletion is still in progress
+  // 2. `startDeleteTransition` - This is a function we can use to start the async operation, like deleting an event
+  const [isDeletePending, startDeleteTransition] = useTransition();
+  const router = useRouter();
 
-    // useTransition is a React hook that helps manage the state of transitions in async operations
-    // It returns two values:
-    // 1. `isDeletePending` - This is a boolean that tells us if the deletion is still in progress
-    // 2. `startDeleteTransition` - This is a function we can use to start the async operation, like deleting an event
-    const [isDeletePending,startDeleteTransition] = useTransition()
-    const router = userRouter()
-
-    const form = useForm<z.infer<typeof eventFormSchema>>({
+  const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema), // Validate with Zod schema
     defaultValues: event
       ? {
@@ -52,19 +70,16 @@ export default function EventForm({
         },
   });
 
-
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
-    const action = event == null ? createEvent : updateEvent.bind(null, event.id)
-    try {
-        await action(values)
-    } catch (error: any) {
-        // Handle any error that occurs during the action (e.g., network error)
-        form.setError("root", {
-            message: `There was an error saving your event ${error.message}`,
+     const action =
+      event == null ? createEvent : updateEvent.bind(null, event.id);
+     const data = await action(values)
+        if (data?.error) {
+            form.setError("root", {
+                message: "There was an error saving your event",
         })
-    }
-  }
-
+     }
+   }
 
   return (
     <Form {...form}>
