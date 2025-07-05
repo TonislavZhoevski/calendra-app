@@ -71,15 +71,15 @@ export default function EventForm({
   });
 
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
-     const action =
+    const action =
       event == null ? createEvent : updateEvent.bind(null, event.id);
-     const data = await action(values)
-        if (data?.error) {
-            form.setError("root", {
-                message: "There was an error saving your event",
-        })
-     }
-   }
+    const data = await action(values);
+    if (data?.error) {
+      form.setError('root', {
+        message: 'There was an error saving your event',
+      });
+    }
+  }
 
   return (
     <Form {...form}>
