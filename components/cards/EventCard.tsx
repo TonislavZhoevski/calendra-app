@@ -1,5 +1,8 @@
 import { cn } from "@/lib/utils"
-import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card"
+import { formatEventDescription } from "@/lib/formatters"
+import { Button } from "../ui/button"
+import Link from "next/link"
 
 // Type definition for event card props
 type EventCardProps = {

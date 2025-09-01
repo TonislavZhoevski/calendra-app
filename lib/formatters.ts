@@ -1,6 +1,6 @@
 // Format a duration in minutes into a readable string like "1 hr 30 mins"
 
-export function formatEventDescription(durationInMinutes: number) {
+export function formatEventDescription(durationInMinutes: number) : string {
   const hours = Math.floor(durationInMinutes / 60); // Get number of full hours
   const minutes = durationInMinutes % 60; // Get remaining minutes after removing full hours
 
